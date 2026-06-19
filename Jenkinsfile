@@ -20,9 +20,9 @@ pipeline {
                 script {
                     if (env.TAG_NAME) {
                         IMAGE_TAG = env.TAG_NAME
-                    } else if (env.GIT_BRANCH == 'origin/main') {
+                    } else if (env.GIT_BRANCH == 'origin/main' || env.GIT_BANCH == 'main') {
                         IMAGE_TAG = 'latest'
-                    } else if (env.GIT_BANCH == 'origin/develop') {
+                    } else if (env.GIT_BANCH == 'origin/develop' || env.GIT_BANCH == 'develop') {
                         IMAGE_TAG = "develop-${env.GIT_COMMIT[0..6]}"
                     } else {
                         IMAGE_TAG = "branch-${env.GIT_COMMIT[0..6]}"
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'podman build -t ${IMAGE_NAME}:{IMAGE_TAG} ./app'
+                sh "podman build -t ${IMAGE_NAME}:${IMAGE_TAG} ./app"
             }
         }
 
