@@ -21,8 +21,12 @@ pipeline {
 
         stage('Push') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | podman login docker.io -u $DOCKER_CREDENTIALS_USR --password-stdin'
-                sh 'podman push ${IMAGE_NAME}:latest' 
+                sh '''
+                    echo $DOCKERHUB_CREDENTIALS_PSW | podman login docker.io \
+                    -u $DOCKERHUB_CREDENTIALS_USR \
+                    --password-stdin
+                    podman push mariannabrnrd/flask-app-example:latest
+                '''
             }
         }
     }
