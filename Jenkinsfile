@@ -1,3 +1,5 @@
+def IMAGE_TAG = ''
+
 pipeline {
     agent { label 'docker-agent' }
 
@@ -17,13 +19,13 @@ pipeline {
             steps {
                 script {
                     if (env.TAG_NAME) {
-                        def IMAGE_TAG = env.TAG_NAME
+                        IMAGE_TAG = env.TAG_NAME
                     } else if (env.GIT_BRANCH == 'origin/main') {
-                        def IMAGE_TAG = 'latest'
+                        IMAGE_TAG = 'latest'
                     } else if (env.GIT_BANCH == 'origin/develop') {
-                        def IMAGE_TAG = "develop-${env.GIT_COMMIT[0..6]}"
+                        IMAGE_TAG = "develop-${env.GIT_COMMIT[0..6]}"
                     } else {
-                        def IMAGE_TAG = "branch-${env.GIT_COMMIT[0..6]}"
+                        IMAGE_TAG = "branch-${env.GIT_COMMIT[0..6]}"
                     }
                     echo "Image tag: ${IMAGE_TAG}"
                 }
