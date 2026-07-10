@@ -3,6 +3,14 @@ def IMAGE_TAG = ''
 pipeline {
     agent { label 'docker-agent' }
 
+    parameters {
+        choice(
+            name: 'BRANCH',
+            choices: ['main', 'develop'],
+            description: 'Seleziona il branch da buildare'
+        )
+    }
+
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         IMAGE_NAME = "mariannabrnrd/flask-app-example"
@@ -11,7 +19,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "${params.BRANCH}"]],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/mariannabrnrd/formazione_sou_k8s/tree/main',
+                        ]]
+                    ])
+                }
             }
         }
 
@@ -20,9 +36,9 @@ pipeline {
                 script {
                     if (env.TAG_NAME) {
                         IMAGE_TAG = env.TAG_NAME
-                    } else if (env.GIT_BRANCH == 'origin/main' || env.GIT_BANCH == 'main') {
+                    } else if (params.BRANCH == 'main') {
                         IMAGE_TAG = 'latest'
-                    } else if (env.GIT_BANCH == 'origin/develop' || env.GIT_BANCH == 'develop') {
+                    } else if (params.BRANCH == 'develop') {
                         IMAGE_TAG = "develop-${env.GIT_COMMIT[0..6]}"
                     } else {
                         IMAGE_TAG = "branch-${env.GIT_COMMIT[0..6]}"
