@@ -24,7 +24,7 @@ pipeline {
                         $class: 'GitSCM',
                         branches: [[name: "${params.BRANCH}"]],
                         userRemoteConfigs: [[
-                            url: 'https://github.com/mariannabrnrd/formazione_sou_k8s/tree/main',
+                            url: 'https://github.com/mariannabrnrd/formazione_sou_k8s',
                         ]]
                     ])
                 }
