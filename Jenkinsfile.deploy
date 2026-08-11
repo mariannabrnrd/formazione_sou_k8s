@@ -2,11 +2,8 @@ pipeline {
     agent { label 'mac-agent' }
 
     parameters {
-        string(
-            name: 'IMAGE_TAG'
-            defaultValue: 'latest',
-            description: 'Tag immagine Docker da deployare (es. latest, v1.0.0, develop-abc1234)'
-        )
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Tag immagine Docker da deployare')
+        }
     }
 
     stages {
