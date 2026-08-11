@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'mac-agent' }
+
+    parameters {
+        string(
+            name: 'IMAGE_TAG'
+            defaultValue: 'latest',
+            description: 'Tag immagine Docker da deployare (es. latest, v1.0.0, develop-abc1234)'
+        )
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Helm Deploy') {
+            steps {
+                sh '''
+                    helm upgrade --install flask-app charts/flask-app \
+                    --namespace formazione-sou \
+                    --set image.tag=${IMAGE_TAG}
+                '''
+            }
+        }
+
+        stage('Verifica Deploy') {
+            steps {
+                sh 'kubectl get pods -n formazione-sou'
+            }
+        }
+    }
+}
